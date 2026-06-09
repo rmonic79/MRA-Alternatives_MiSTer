@@ -14,15 +14,35 @@
   <buttons default="A,B,X,Start" names="Fire,Roll,Dynamite,-,-,-,Start,Coin,Pause"/>
 
   <switches default="FF,FF">
-    <dip bits="0,2" ids="5C 1C,4C 1C,3C 1C,2C 1C,1C 4C,1C 3C,1C 2C,1C 1C" name="Coin A"/>
-    <dip bits="3,5" ids="5C 1C,4C 1C,3C 1C,2C 1C,1C 4C,1C 3C,1C 2C,1C 1C" name="Coin B"/>
-    <dip bits="6"   ids="On,Off" name="Coin Mode"/>
-    <dip bits="7"   ids="Off,On" name="Service Mode"/>
-    <dip bits="8,9" ids="3,4,2,1" name="Lives"/>
-    <dip bits="10,11" ids="2,3,1,4" name="Bullets per Round"/>
-    <dip bits="12,13" ids="Hard,Hardest,Easy,Normal" name="Difficulty"/>
-    <dip bits="14"  ids="On,Off" name="Demo Sounds"/>
-    <dip bits="15"  ids="No,Yes" name="Allow Continue"/>
+    <!-- Blood Bros DIPs allineati 1:1 a MAME bloodbro.cpp INPUT_PORTS_START(bloodbro_base).
+         DSW e' 16-bit (SW1 lo byte + SW2 hi byte).
+         BLOODBRO_COINAGE macro (SW1:1-6):
+           SW1:1 Coin Mode (decide se SW1:2-5 sono Coinage o Coin_A+Coin_B)
+           SW1:2-5 Coinage (Mode 1) / Coin_A SW1:2-3 + Coin_B SW1:4-5 (Mode 2)
+           SW1:6 Starting Coin (Normal / x2)
+           SW1:7 unknown (PORT_DIPUNKNOWN)
+           SW1:8 unknown (PORT_DIPUNKNOWN) -->
+    <!-- Coin Mode: bit=0 -> Mode 2 (0x0000), bit=1 -> Mode 1 (0x0001). Default FF=Mode 1. -->
+    <dip bits="0"   ids="Mode 2,Mode 1" name="Coin Mode"/>
+    <!-- Coinage Mode 1 (SW1:2-5, 16 valori, valido se Coin Mode = Mode 1).
+         ids ordine bit 0000..1111 (default 1111 = 1C 1C). -->
+    <dip bits="1,4" ids="Free Play,8C 3C,5C 3C,3C 2C,2C 3C,1C 6C,1C 5C,1C 4C,1C 3C,1C 2C,6C 1C,5C 1C,4C 1C,3C 1C,2C 1C,1C 1C" name="Coinage (Mode 1)"/>
+    <!-- Starting Coin: bit=0 -> x2 (0x0000), bit=1 -> Normal (0x0020). Default FF=Normal. -->
+    <dip bits="5"   ids="x2,Normal" name="Starting Coin"/>
+    <!-- SW1:7-8 marcati PORT_DIPUNKNOWN in MAME (sconosciuti, non testati). -->
+    <dip bits="6"   ids="On,Off" name="Unknown SW1.7"/>
+    <dip bits="7"   ids="On,Off" name="Unknown SW1.8"/>
+    <!-- SW2 (default 0xFF00):
+         SW2:1,2 Lives (1/2/3/5 - default 3)
+         SW2:3,4 Bonus Life (300K 500K+/500K+/500K/None - default 300K 500K+)
+         SW2:5,6 Difficulty (Easy/Normal/Hard/Very Hard - default Normal)
+         SW2:7 Allow Continue (No/Yes - default Yes)
+         SW2:8 Demo Sounds (Off/On - default On) -->
+    <dip bits="8,9" ids="1,5,2,3" name="Lives"/>
+    <dip bits="10,11" ids="None,500K,500K+,300K 500K+" name="Bonus Life"/>
+    <dip bits="12,13" ids="Very Hard,Hard,Easy,Normal" name="Difficulty"/>
+    <dip bits="14"  ids="No,Yes" name="Allow Continue"/>
+    <dip bits="15"  ids="Off,On" name="Demo Sounds"/>
   </switches>
 
   <rom index="1">
